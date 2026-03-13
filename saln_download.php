@@ -30,6 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //SPOUSES, WHO ARE BOTH PUBLIC OFFICIALS OR EMPLOYEES, MAY FILE THE SALN JOINTLY OR SEPARATELY. THE DECLARANT SHALL CHECK THE APPROPRIATE BOX
     $filling = $_POST['filling'];
 
+    $children = $_POST['children'] ?? [];
+
 
     // Delaration Information
     $template->setValue('first_name', htmlspecialchars($first_name));
