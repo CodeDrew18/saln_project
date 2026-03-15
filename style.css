@@ -387,11 +387,43 @@ body {
 /* ----- Form Actions ----- */
 .form-actions {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
     padding: 2rem 0;
 }
 
+.btn-secondary {
+    width: min(100%, 360px);
+    padding: 0.85rem 1.5rem;
+    background: linear-gradient(180deg, #fffdfd 0%, #fff4f4 100%);
+    color: #9b2c2c;
+    border: 1px solid #feb2b2;
+    border-radius: var(--radius-lg);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+}
+
+.btn-secondary:hover {
+    border-color: #f56565;
+    color: #742a2a;
+    background: linear-gradient(180deg, #fff5f5 0%, #ffe3e3 100%);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-secondary:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
 .btn-primary {
+    width: min(100%, 360px);
     padding: 1rem 3rem;
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
     color: white;
@@ -498,6 +530,11 @@ body {
         width: 100%;
         padding: 1.25rem 2rem;
     }
+
+    .btn-secondary {
+        width: 100%;
+        padding: 1rem 1.5rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -551,6 +588,7 @@ body {
 .form-textarea:focus,
 .radio-label:focus-within,
 .btn-primary:focus,
+.btn-secondary:focus,
 .btn-add:focus {
     outline: 2px solid var(--accent-color);
     outline-offset: 2px;
@@ -559,6 +597,7 @@ body {
 /* ----- Print Styles ----- */
 @media print {
     .btn-primary,
+    .btn-secondary,
     .btn-add,
     .btn-remove {
         display: none !important;

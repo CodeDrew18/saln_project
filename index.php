@@ -4,6 +4,7 @@ include_once 'saln_download.php';
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,6 +15,7 @@ include_once 'saln_download.php';
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="page-wrapper">
         <!-- Header Section -->
@@ -29,7 +31,9 @@ include_once 'saln_download.php';
         <!-- Main Content -->
         <main class="main-content">
             <form action="saln_download.php" method="POST" id="salnForm">
-
+                <button class="btn-secondary btn-clear" type="button" onclick="clearForm(event)">
+                    Clear All Fields
+                </button>
                 <!-- Declarant Information -->
                 <section class="form-section">
                     <header class="section-header">
@@ -188,40 +192,53 @@ include_once 'saln_download.php';
                             <span class="section-number">5</span>
                             Assets, Real Properties, and Personal Properties
                         </h2>
+                        <button class="btn-add" type="button" onclick="addAsset()">
+                            + Add Asset
+                        </button>
                     </header>
                     <div class="section-body">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label class="form-label" for="asset_description">Description</label>
-                                <input class="form-input" type="text" id="asset_description" name="asset_description" placeholder="Describe the asset">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" for="asset_kind">Kind</label>
-                                <input class="form-input" type="text" id="asset_kind" name="asset_kind" placeholder="e.g., Land, Building, Vehicle">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" for="asset_location">Exact Location</label>
-                                <input class="form-input" type="text" id="asset_location" name="asset_location" placeholder="Location of the asset">
-                            </div>
-                        </div>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label class="form-label" for="asset_value">Asset Value</label>
-                                <input class="form-input" type="text" id="asset_value" name="asset_value" placeholder="Current value">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" for="fair_market_value">Current Fair Market Value</label>
-                                <input class="form-input" type="text" id="fair_market_value" name="fair_market_value" placeholder="Market value">
-                            </div>
-                        </div>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label class="form-label" for="acquisition_year">Year of Acquisition</label>
-                                <input class="form-input" type="number" id="acquisition_year" name="acquisition_year" placeholder="YYYY">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" for="acquisition_cost">Acquisition Cost</label>
-                                <input class="form-input" type="text" id="acquisition_cost" name="acquisition_cost" placeholder="Cost when acquired">
+                        <p class="section-note">Add one row per asset so each entry is displayed in the generated Word document.</p>
+                        <div class="children-container" id="assetContainer">
+                            <div class="child-entry asset-entry">
+                                <button class="btn-remove" type="button" onclick="removeAsset(this)" title="Remove entry">&times;</button>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Description</label>
+                                        <input class="form-input" type="text" name="asset_description[]" placeholder="Describe the asset">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Kind</label>
+                                        <input class="form-input" type="text" name="asset_kind[]" placeholder="e.g., Land, Building, Vehicle">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Exact Location</label>
+                                        <input class="form-input" type="text" name="asset_location[]" placeholder="Location of the asset">
+                                    </div>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Asset Value</label>
+                                        <input class="form-input" type="text" name="asset_value[]" placeholder="Current value">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Current Fair Market Value</label>
+                                        <input class="form-input" type="text" name="fair_market_value[]" placeholder="Market value">
+                                    </div>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Year of Acquisition</label>
+                                        <input class="form-input" type="number" name="acquisition_year[]" placeholder="YYYY">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Acquisition Mode</label>
+                                        <input class="form-input" type="text" name="acquisition_mode[]" placeholder="e.g., Purchase, Donation">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Acquisition Cost</label>
+                                        <input class="form-input" type="text" name="acquisition_cost[]" placeholder="Cost when acquired">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -248,4 +265,5 @@ include_once 'saln_download.php';
 
     <script src="functions/index.js"></script>
 </body>
+
 </html>
