@@ -9,7 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="style.css?v=fullwidth-20260316">
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
 </head>
 
 <body>
@@ -69,58 +71,58 @@
                 </div>
             </section>
 
-            <!-- Assets, Real Properties, and Personal Properties -->
+            <!-- Real Properties -->
             <section class="form-section">
                 <header class="section-header">
                     <h2 class="section-title">
                         <span class="section-number">2</span>
-                        Assets, Real Properties, and Personal Properties
+                        Real Properties
                     </h2>
-                    <button class="btn-add" type="button" onclick="addAsset()">
-                        + Add Asset
+                    <button class="btn-add" type="button" onclick="addAnnexBRealProperty()">
+                        + Add Real Property
                     </button>
                 </header>
                 <div class="section-body">
-                    <p class="section-note">Add one row per asset so each entry is displayed in the generated Word document.</p>
-                    <div class="children-container" id="assetContainer">
-                        <div class="child-entry asset-entry">
-                            <button class="btn-remove" type="button" onclick="removeAsset(this)" title="Remove entry">&times;</button>
+                    <p class="section-note">Add one row per real property declared by the declarant.</p>
+                    <div class="children-container" id="annexBRealPropertyContainer">
+                        <div class="child-entry asset-entry annexb-real-entry">
+                            <button class="btn-remove" type="button" onclick="removeAnnexBRealProperty(this)" title="Remove entry">&times;</button>
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label class="form-label">Description</label>
-                                    <input class="form-input" type="text" name="asset_description[]" placeholder="Describe the asset">
+                                    <input class="form-input" type="text" name="real_property_description[]" placeholder="Describe the real property">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Kind</label>
-                                    <input class="form-input" type="text" name="asset_kind[]" placeholder="e.g., Land, Building, Vehicle">
+                                    <input class="form-input" type="text" name="real_property_kind[]" placeholder="e.g., Land, Building, Condominium Unit">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Exact Location</label>
-                                    <input class="form-input" type="text" name="asset_location[]" placeholder="Location of the asset">
+                                    <input class="form-input" type="text" name="real_property_location[]" placeholder="Location of the real property">
                                 </div>
                             </div>
                             <div class="form-grid">
                                 <div class="form-group">
-                                    <label class="form-label">Asset Value</label>
-                                    <input class="form-input" type="text" name="asset_value[]" placeholder="Current value">
+                                    <label class="form-label">Assessed Value</label>
+                                    <input class="form-input" type="text" name="real_property_assessed_value[]" placeholder="Assessed value">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Current Fair Market Value</label>
-                                    <input class="form-input" type="text" name="fair_market_value[]" placeholder="Market value">
+                                    <input class="form-input" type="text" name="real_property_fair_market_value[]" placeholder="Current fair market value">
                                 </div>
                             </div>
                             <div class="form-grid">
                                 <div class="form-group">
-                                    <label class="form-label">Year of Acquisition</label>
-                                    <input class="form-input" type="number" name="acquisition_year[]" placeholder="YYYY">
+                                    <label class="form-label">Year Acquired</label>
+                                    <input class="form-input" type="number" name="real_property_acquisition_year[]" placeholder="YYYY">
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Acquisition Mode</label>
-                                    <input class="form-input" type="text" name="acquisition_mode[]" placeholder="e.g., Purchase, Donation">
+                                    <label class="form-label">Mode of Acquisition</label>
+                                    <input class="form-input" type="text" name="real_property_acquisition_mode[]" placeholder="e.g., Purchase, Inheritance, Donation">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Acquisition Cost</label>
-                                    <input class="form-input" type="text" name="acquisition_cost[]" placeholder="Cost when acquired">
+                                    <input class="form-input" type="text" name="real_property_acquisition_cost[]" placeholder="Cost at the time of acquisition">
                                 </div>
                             </div>
                         </div>
@@ -134,31 +136,28 @@
                     <h2 class="section-title">
                         <span class="section-number">3</span>
                         Personal Properties
-
                     </h2>
-                    <button class="btn-add" type="button" onclick="addAsset()">
-                        + Add Asset
+                    <button class="btn-add" type="button" onclick="addAnnexBPersonalProperty()">
+                        + Add Personal Property
                     </button>
                 </header>
                 <div class="section-body">
-                    <p class="section-note">Add one row per asset so each entry is displayed in the generated Word document.</p>
-                    <div class="children-container" id="assetContainer">
-                        <div class="child-entry asset-entry">
-                            <button class="btn-remove" type="button" onclick="removeAsset(this)" title="Remove entry">&times;</button>
+                    <p class="section-note">Add one row per personal property declared by the declarant.</p>
+                    <div class="children-container" id="annexBPersonalPropertyContainer">
+                        <div class="child-entry asset-entry annexb-personal-entry">
+                            <button class="btn-remove" type="button" onclick="removeAnnexBPersonalProperty(this)" title="Remove entry">&times;</button>
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label class="form-label">Description</label>
-                                    <input class="form-input" type="text" name="asset_description[]" placeholder="Describe the asset">
+                                    <input class="form-input" type="text" name="personal_property_description[]" placeholder="Describe the personal property">
                                 </div>
-                            </div>
-                            <div class="form-grid">
                                 <div class="form-group">
-                                    <label class="form-label">Year of Acquisition</label>
-                                    <input class="form-input" type="number" name="acquisition_year[]" placeholder="YYYY">
+                                    <label class="form-label">Year Acquired</label>
+                                    <input class="form-input" type="number" name="personal_property_acquisition_year[]" placeholder="YYYY">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Acquisition Cost / Amount</label>
-                                    <input class="form-input" type="text" name="acquisition_cost[]" placeholder="Cost when acquired">
+                                    <input class="form-input" type="text" name="personal_property_amount[]" placeholder="Acquisition amount">
                                 </div>
                             </div>
                         </div>
@@ -167,37 +166,33 @@
             </section>
 
             <!-- Liabilities -->
-
             <section class="form-section">
                 <header class="section-header">
                     <h2 class="section-title">
                         <span class="section-number">4</span>
                         Liabilities
-
                     </h2>
-                    <button class="btn-add" type="button" onclick="addAsset()">
-                        + Add Liabilities
+                    <button class="btn-add" type="button" onclick="addAnnexBLiability()">
+                        + Add Liability
                     </button>
                 </header>
                 <div class="section-body">
-                    <p class="section-note">Add one row per asset so each entry is displayed in the generated Word document.</p>
-                    <div class="children-container" id="assetContainer">
-                        <div class="child-entry asset-entry">
-                            <button class="btn-remove" type="button" onclick="removeAsset(this)" title="Remove entry">&times;</button>
+                    <p class="section-note">Add one row per liability with the creditor and outstanding balance.</p>
+                    <div class="children-container" id="annexBLiabilityContainer">
+                        <div class="child-entry asset-entry annexb-liability-entry">
+                            <button class="btn-remove" type="button" onclick="removeAnnexBLiability(this)" title="Remove entry">&times;</button>
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label class="form-label">Nature</label>
-                                    <input class="form-input" type="text" name="asset_description[]" placeholder="Describe the Nature">
+                                    <input class="form-input" type="text" name="liability_nature[]" placeholder="e.g., Housing Loan, Personal Loan">
                                 </div>
-                            </div>
-                            <div class="form-grid">
                                 <div class="form-group">
-                                    <label class="form-label">Name of Creditors</label>
-                                    <input class="form-input" type="text" name="acquisition_year[]" placeholder="Creditor's Name">
+                                    <label class="form-label">Name of Creditor</label>
+                                    <input class="form-input" type="text" name="liability_creditor[]" placeholder="Creditor name">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Outstanding Balance</label>
-                                    <input class="form-input" type="text" name="acquisition_cost[]" placeholder="Outstanding Balance">
+                                    <input class="form-input" type="text" name="liability_balance[]" placeholder="Outstanding balance">
                                 </div>
                             </div>
                         </div>
@@ -205,47 +200,42 @@
                 </div>
             </section>
 
-
             <!-- Business Interests and Financial Connections -->
-
             <section class="form-section">
                 <header class="section-header">
                     <h2 class="section-title">
                         <span class="section-number">5</span>
                         Business Interests and Financial Connections
-
                     </h2>
-                    <button class="btn-add" type="button" onclick="addAsset()">
-                        + Add Business Interests and Financial Connections
+                    <button class="btn-add" type="button" onclick="addAnnexBBusinessInterest()">
+                        + Add Business Interest
                     </button>
                 </header>
                 <div class="section-body">
-                    <p class="section-note">Add one row per asset so each entry is displayed in the generated Word document.</p>
-                    <div class="children-container" id="assetContainer">
-                        <div class="child-entry asset-entry">
-                            <button class="btn-remove" type="button" onclick="removeAsset(this)" title="Remove entry">&times;</button>
-
+                    <p class="section-note">Add one row per declared business interest or financial connection.</p>
+                    <div class="children-container" id="annexBBusinessContainer">
+                        <div class="child-entry asset-entry annexb-business-entry">
+                            <button class="btn-remove" type="button" onclick="removeAnnexBBusinessInterest(this)" title="Remove entry">&times;</button>
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label class="form-label">Name of Entity / Business Enterprise</label>
-                                    <input class="form-input" type="text" name="asset_description[]" placeholder="Name of the Entity">
+                                    <input class="form-input" type="text" name="business_entity_name[]" placeholder="Name of entity or enterprise">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Business Address</label>
+                                    <input class="form-input" type="text" name="business_address[]" placeholder="Business address">
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group form-group--full">
+                                    <label class="form-label">Nature of Business Interest and/or Financial Connection</label>
+                                    <input class="form-input" type="text" name="business_interest_nature[]" placeholder="Describe the business interest or financial connection">
                                 </div>
                             </div>
                             <div class="form-grid">
                                 <div class="form-group">
-                                    <label class="form-label">Business Address</label>
-                                    <input class="form-input" type="text" name="acquisition_year[]" placeholder="Address">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Nature of Business Interest &/ or Financial Connection</label>
-                                    <input class="form-input" type="text" name="acquisition_cost[]" placeholder="Cost when acquired">
-                                </div>
-
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label class="form-label">Date of Acquisition of Interest or Connection</label>
-                                        <input class="form-input" type="date" name="acquisition_cost[]" placeholder="Cost when acquired">
-                                    </div>
+                                    <label class="form-label">Date of Acquisition of Interest or Connection</label>
+                                    <input class="form-input" type="date" name="business_interest_acquisition_date[]">
                                 </div>
                             </div>
                         </div>
@@ -253,8 +243,12 @@
                 </div>
             </section>
 
-
-
+            <div class="form-actions">
+                <button class="btn-primary" type="submit">
+                    Generate SALN Document
+                </button>
+            </div>
+        </form>
     </main>
 
     <?php include 'template/footer.php'; ?>

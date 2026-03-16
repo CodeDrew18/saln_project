@@ -1,6 +1,6 @@
         <footer class="footer-section">
             <div class="footer-content">
-                <p>&copy; 2024 SALN Generator. All rights reserved. This form is for official use only.</p>
-                <p class="footer-creator">Andrew B. Malubag | Creator | UI / UX</p>
+                <p>&copy; <?php echo date("Y"); ?> SALN Generator. All rights reserved.</p>
+                <p class="footer-creator">Developed by: Andrew B. Malubag</p>
             </div>
         </footer>

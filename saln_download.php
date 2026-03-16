@@ -1,193 +1,140 @@
 <?php
 
-require 'vendor/autoload.php';
+declare(strict_types=1);
 
-use PhpOffice\PhpWord\TemplateProcessor;
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'functions' . DIRECTORY_SEPARATOR . 'db.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo 'Method not allowed.';
+    exit;
+}
 
-    $templatePath = __DIR__ . '/saln_file/saln_annexA.docx';
-    $template = new TemplateProcessor($templatePath);
+$annexType = trim((string) ($_POST['annex_type'] ?? ''));
+$targetPage = 'index.php';
+$annexCode = 'A';
 
-    //Declarant Information
-    $first_name = $_POST['first_name'] ?? "";
-    $last_name = $_POST['last_name'] ?? "";
-    $middle_initials = $_POST['middle'] ?? "";
-    $position = $_POST['position'] ?? "";
-    $agency = $_POST['agency'] ?? "";
-    $address = $_POST['address'] ?? "";
+if (strcasecmp($annexType, 'annexB.php') === 0) {
+    $targetPage = 'annexB.php';
+    $annexCode = 'B';
+} elseif (strcasecmp($annexType, 'annexC.php') === 0) {
+    $targetPage = 'annexC.php';
+    $annexCode = 'C';
+}
 
-    $file_name = strtolower($first_name . '_' . $last_name . '_saln_annexA.docx');
+if ($annexCode === 'A') {
+    // Fallback detection by annex-specific field names.
+    if (isset($_POST['annexc_spouse_first_name']) || isset($_POST['annexc_child_name'])) {
+        $annexCode = 'C';
+        $targetPage = 'annexC.php';
+    } elseif (isset($_POST['real_property_description']) || isset($_POST['liability_nature'])) {
+        $annexCode = 'B';
+        $targetPage = 'annexB.php';
+    }
+}
 
-    //Spouse Information
-    $spouse_first_name = $_POST['spouse_first_name'] ?? "";
-    $spouse_last_name = $_POST['spouse_last_name'] ?? "";
-    $spouse_middle_initials = $_POST['spouse_middle'] ?? "";
-    $spouse_position = $_POST['spouse_position'] ?? "";
-    $spouse_agency = $_POST['spouse_agency'] ?? "";
-    $spouse_address = $_POST['spouse_address'] ?? "";
+$sectionMapByAnnex = [
+    'B' => [
+        'annexBRealProperty' => [
+            'real_property_description',
+            'real_property_kind',
+            'real_property_location',
+            'real_property_assessed_value',
+            'real_property_fair_market_value',
+            'real_property_acquisition_year',
+            'real_property_acquisition_mode',
+            'real_property_acquisition_cost',
+        ],
+        'annexBPersonalProperty' => [
+            'personal_property_description',
+            'personal_property_acquisition_year',
+            'personal_property_amount',
+        ],
+        'annexBLiability' => [
+            'liability_nature',
+            'liability_creditor',
+            'liability_balance',
+        ],
+        'annexBBusinessInterest' => [
+            'business_entity_name',
+            'business_address',
+            'business_interest_nature',
+            'business_interest_acquisition_date',
+        ],
+    ],
+    'C' => [
+        'annexCChildren' => [
+            'annexc_child_name',
+            'annexc_child_age',
+            'annexc_child_relationship',
+        ],
+        'annexCRealProperty' => [
+            'annexc_real_description',
+            'annexc_real_kind',
+            'annexc_real_location',
+            'annexc_real_assessed_value',
+            'annexc_real_fair_market_value',
+            'annexc_real_acquisition_year',
+            'annexc_real_acquisition_mode',
+            'annexc_real_acquisition_cost',
+        ],
+        'annexCPersonalProperty' => [
+            'annexc_personal_description',
+            'annexc_personal_acquisition_year',
+            'annexc_personal_amount',
+        ],
+        'annexCBusinessInterest' => [
+            'annexc_business_entity_name',
+            'annexc_business_address',
+            'annexc_business_nature',
+            'annexc_business_acquisition_date',
+        ],
+    ],
+];
 
-    //SPOUSES, WHO ARE BOTH PUBLIC OFFICIALS OR EMPLOYEES, MAY FILE THE SALN JOINTLY OR SEPARATELY. THE DECLARANT SHALL CHECK THE APPROPRIATE BOX
-    $filling = $_POST['filling'] ?? '';
+try {
+    $draftToken = trim((string) ($_POST['draft_token'] ?? ''));
 
-    $toArray = static function ($value): array {
-        if (is_array($value)) {
-            return $value;
-        }
+    $defaultProfile = [
+        'first_name' => trim((string) ($_POST['first_name'] ?? '')),
+        'middle_name' => trim((string) ($_POST['middle'] ?? '')),
+        'last_name' => trim((string) ($_POST['last_name'] ?? '')),
+        'email' => trim((string) ($_POST['user_email'] ?? '')),
+    ];
 
-        if ($value === null || $value === '') {
-            return [];
-        }
+    $userId = saln_get_or_create_user_id($defaultProfile, $draftToken);
 
-        return [$value];
-    };
+    $profile = [
+        'first_name' => trim((string) ($_POST['first_name'] ?? '')),
+        'middle_name' => trim((string) ($_POST['middle'] ?? '')),
+        'last_name' => trim((string) ($_POST['last_name'] ?? '')),
+        'position_title' => trim((string) ($_POST['position'] ?? '')),
+        'agency' => trim((string) ($_POST['agency'] ?? '')),
+        'office_address' => trim((string) ($_POST['address'] ?? '')),
+        'email' => trim((string) ($_POST['user_email'] ?? '')),
+        'spouse_first_name' => trim((string) ($_POST['annexc_spouse_first_name'] ?? '')),
+        'spouse_middle_name' => trim((string) ($_POST['annexc_spouse_middle'] ?? '')),
+        'spouse_last_name' => trim((string) ($_POST['annexc_spouse_last_name'] ?? '')),
+        'spouse_position' => trim((string) ($_POST['annexc_spouse_position'] ?? '')),
+        'spouse_agency' => trim((string) ($_POST['annexc_spouse_agency'] ?? '')),
+        'spouse_office_address' => trim((string) ($_POST['annexc_spouse_address'] ?? '')),
+    ];
 
-    $children = $toArray($_POST['children'] ?? []);
-    $ages = $toArray($_POST['age'] ?? []);
+    saln_db_upsert_user_profile($userId, $profile);
+    saln_db_save_annex_form($userId, $annexCode, $targetPage, $_POST, trim((string) ($_POST['filling'] ?? '')));
 
-    // asset information
-    $assets_description = $toArray($_POST['asset_description'] ?? []);
-    $assets_kind = $toArray($_POST['asset_kind'] ?? []);
-    $assets_location = $toArray($_POST['asset_location'] ?? []);
-    $assets_value = $toArray($_POST['asset_value'] ?? $_POST['assets_value'] ?? []);
-    $asset_fair_market_value = $toArray($_POST['fair_market_value'] ?? []);
-    $asset_acquisition_year = $toArray($_POST['acquisition_year'] ?? $_POST['aquisition_year'] ?? []);
-    $asset_acquisition_mode = $toArray($_POST['acquisition_mode'] ?? $_POST['aquisition_mode'] ?? []);
-    $asset_acquisition_cost = $toArray($_POST['acquisition_cost'] ?? $_POST['aquisition_cost'] ?? []);
-
-
-
-
-    // Delaration Information
-    $template->setValue('first_name', htmlspecialchars($first_name));
-    $template->setValue('family_name', htmlspecialchars($last_name));
-    $template->setValue('middle', htmlspecialchars($middle_initials));
-
-    $template->setValue('position', htmlspecialchars($position));
-    $template->setValue('agency', htmlspecialchars($agency));
-    $template->setValue('address', nl2br(htmlspecialchars($address)));
-
-    // Spouse Information
-    $template->setValue('s_first_name', htmlspecialchars($spouse_first_name));
-    $template->setValue('s_fam_n', htmlspecialchars($spouse_last_name));
-    $template->setValue('s_middle', htmlspecialchars($spouse_middle_initials));
-
-    $template->setValue('s_position', htmlspecialchars($spouse_position));
-    $template->setValue('s_agency', htmlspecialchars($spouse_agency));
-    $template->setValue('s_address', nl2br(htmlspecialchars($spouse_address)));
-
-    //SPOUSES, WHO ARE BOTH PUBLIC OFFICIALS OR EMPLOYEES, MAY FILE THE SALN JOINTLY OR SEPARATELY. THE DECLARANT SHALL CHECK THE APPROPRIATE BOX
-
-    $template->setValue('joint', $filling == 'joint' ? '☑' : '☐');
-    $template->setValue('separate', $filling == 'separate' ? '☑' : '☐');
-    $template->setValue('na', $filling == 'na' ? '☑' : '☐');
-
-
-    // Children Information
-    $childRows = [];
-    foreach ($children as $index => $childName) {
-        $name = trim($childName);
-        $age = isset($ages[$index]) ? trim((string) $ages[$index]) : '';
-
-        if ($name === '' && $age === '') {
-            continue;
-        }
-
-        $childRows[] = [
-            'children' => htmlspecialchars($name),
-            'child_age' => htmlspecialchars($age),
-        ];
+    $sectionMap = $sectionMapByAnnex[$annexCode] ?? [];
+    foreach ($sectionMap as $sectionKey => $fields) {
+        $rows = saln_db_rows_from_post($_POST, $fields);
+        saln_db_replace_section_rows($userId, $annexCode, $sectionKey, $rows);
     }
 
-    $variables = $template->getVariables();
-    if (in_array('children', $variables, true)) {
-        if (count($childRows) > 0) {
-            $template->cloneRowAndSetValues('children', $childRows);
-        } else {
-            $template->setValue('children', '');
-            $template->setValue('child_age', '');
-        }
-    }
-
-    // Asset Information
-    $assetRows = [];
-    $assetRowCount = max(
-        count($assets_description),
-        count($assets_kind),
-        count($assets_location),
-        count($assets_value),
-        count($asset_fair_market_value),
-        count($asset_acquisition_year),
-        count($asset_acquisition_mode),
-        count($asset_acquisition_cost)
-    );
-
-    for ($index = 0; $index < $assetRowCount; $index++) {
-        $description = trim((string) ($assets_description[$index] ?? ''));
-        $kind = trim((string) ($assets_kind[$index] ?? ''));
-        $location = trim((string) ($assets_location[$index] ?? ''));
-        $assessedValue = trim((string) ($assets_value[$index] ?? ''));
-        $fairMarketValue = trim((string) ($asset_fair_market_value[$index] ?? ''));
-        $year = trim((string) ($asset_acquisition_year[$index] ?? ''));
-        $mode = trim((string) ($asset_acquisition_mode[$index] ?? ''));
-        $acquisitionCost = trim((string) ($asset_acquisition_cost[$index] ?? ''));
-
-        if (
-            $description === '' &&
-            $kind === '' &&
-            $location === '' &&
-            $assessedValue === '' &&
-            $fairMarketValue === '' &&
-            $year === '' &&
-            $mode === '' &&
-            $acquisitionCost === ''
-        ) {
-            continue;
-        }
-
-        $assetRows[] = [
-            'description' => htmlspecialchars($description),
-            'kind' => htmlspecialchars($kind),
-            'exact_location' => htmlspecialchars($location),
-            'assessed_value' => htmlspecialchars($assessedValue),
-            'cfmv' => htmlspecialchars($fairMarketValue),
-            'year' => htmlspecialchars($year),
-            'mode' => htmlspecialchars($mode),
-            'ac' => htmlspecialchars($acquisitionCost),
-        ];
-    }
-
-    if (in_array('description', $variables, true)) {
-        if (count($assetRows) > 0) {
-            $template->cloneRowAndSetValues('description', $assetRows);
-        } else {
-            $template->setValue('description', '');
-            $template->setValue('kind', '');
-            $template->setValue('exact_location', '');
-            $template->setValue('assessed_value', '');
-            $template->setValue('cfmv', '');
-            $template->setValue('year', '');
-            $template->setValue('mode', '');
-            $template->setValue('ac', '');
-        }
-    }
-
-    
-
-
-
-    $outputFile =  $file_name;
-    $template->saveAs($outputFile);
-
-    if (file_exists($outputFile)) {
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-        header('Content-Disposition: attachment; filename="' . basename($outputFile) . '"');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Length: ' . filesize($outputFile));
-        readfile($outputFile);
-        exit;
-    }
+    header('Location: ' . $targetPage . '?saved=1');
+    exit;
+} catch (Throwable $exception) {
+    error_log('SALN submit DB save failed: ' . $exception->getMessage());
+    http_response_code(500);
+    echo 'Unable to save form data to database.';
+    exit;
 }

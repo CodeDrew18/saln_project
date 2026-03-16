@@ -1,5 +1,5 @@
 ﻿<?php
-include_once 'saln_download.php';
+include_once 'saln_annexA_download.php';
 ?>
 
 <!DOCTYPE html>
@@ -13,7 +13,10 @@ include_once 'saln_download.php';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="style.css?v=fullwidth-1">
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+    <script src="functions/index.js"></script>
 </head>
 
 <body>
@@ -23,14 +26,15 @@ include_once 'saln_download.php';
 
         <!-- Main Content -->
         <main class="main-content">
-            <form action="saln_download.php" method="POST" id="salnForm">
-                <button class="btn-secondary btn-clear" type="button" onclick="clearForm(event)">
-                    Clear All Fields
-                </button>
+            <button class="btn-secondary btn-clear" type="button" onclick="clearForm(event)">
+                Clear All Fields
+            </button>
+            <form action="saln_annexA_download.php" method="POST" id="salnForm">
+
 
                 <div class="form-grid">
                     <div class="form-group form-group--full">
-                        <label class="form-label" for="annex_type">SALN Form Annex</label>
+                        <label class="form-label " for="annex_type">SALN Form Annex</label>
                         <select class="form-select" id="annex_type" name="annex_type" onchange="navigateToAnnexPage()">
                             <option value="index.php" selected>1-A Rules Annex A_2025 SALN Form (Updated Form as of 3 February 2026)</option>
                             <option value="annexB.php">1-B Rules Annex B_2025 SALN Form AS-1 (Declarant) (Updated Form as of 3 February 2026)</option>
@@ -76,6 +80,12 @@ include_once 'saln_download.php';
                             <div class="form-group form-group--full">
                                 <label class="form-label" for="address">Office Address <span class="form-required">*</span></label>
                                 <input class="form-input" type="text" id="address" name="address" placeholder="Enter complete office address" required>
+                            </div>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group form-group--full">
+                                <label class="form-label" for="user_email">Email Address for SALN Copy <span class="form-required">*</span></label>
+                                <input class="form-input" type="email" id="user_email" name="user_email" placeholder="Enter your email address" required>
                             </div>
                         </div>
                     </div>
@@ -174,7 +184,7 @@ include_once 'saln_download.php';
                         <p class="section-note">List unmarried children below eighteen (18) years of age living in declarant''s household:</p>
                         <div class="children-container" id="childrenContainer">
                             <div class="child-entry">
-                                <button class="btn-remove" type="button" onclick="removeChild(this)" title="Remove entry">&times;</button>
+                                <button class="btn-remove" type="button" onclick="removeChildEntry(this)" title="Remove entry">&times;</button>
                                 <div class="form-grid">
                                     <div class="form-group">
                                         <label class="form-label">Name of Child</label>
@@ -223,11 +233,11 @@ include_once 'saln_download.php';
                                 <div class="form-grid">
                                     <div class="form-group">
                                         <label class="form-label">Asset Value</label>
-                                        <input class="form-input" type="text" name="asset_value[]" placeholder="Current value">
+                                        <input class="form-input" type="number" name="asset_value[]" placeholder="Current value">
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Current Fair Market Value</label>
-                                        <input class="form-input" type="text" name="fair_market_value[]" placeholder="Market value">
+                                        <input class="form-input" type="number" name="fair_market_value[]" placeholder="Market value">
                                     </div>
                                 </div>
                                 <div class="form-grid">
@@ -241,7 +251,7 @@ include_once 'saln_download.php';
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Acquisition Cost</label>
-                                        <input class="form-input" type="text" name="acquisition_cost[]" placeholder="Cost when acquired">
+                                        <input class="form-input" type="number" name="acquisition_cost[]" placeholder="Cost when acquired">
                                     </div>
                                 </div>
                             </div>
@@ -264,7 +274,6 @@ include_once 'saln_download.php';
 
     </div>
 
-    <script src="functions/index.js"></script>
 </body>
 
 </html>
