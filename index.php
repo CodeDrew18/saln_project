@@ -19,14 +19,7 @@ include_once 'saln_download.php';
 <body>
     <div class="page-wrapper">
         <!-- Header Section -->
-        <header class="header-section">
-            <div class="header-content">
-                <span class="header-label">Republic of the Philippines</span>
-                <h1 class="header-title">Statement of Assets, Liabilities, and Net Worth</h1>
-                <p class="header-subtitle">SALN Form Generator</p>
-                <p class="header-description">Official Declaration Form for Public Officials and Employees</p>
-            </div>
-        </header>
+        <?php include 'template/header.php'; ?>
 
         <!-- Main Content -->
         <main class="main-content">
@@ -34,6 +27,18 @@ include_once 'saln_download.php';
                 <button class="btn-secondary btn-clear" type="button" onclick="clearForm(event)">
                     Clear All Fields
                 </button>
+
+                <div class="form-grid">
+                    <div class="form-group form-group--full">
+                        <label class="form-label" for="annex_type">SALN Form Annex</label>
+                        <select class="form-select" id="annex_type" name="annex_type" onchange="navigateToAnnexPage()">
+                            <option value="index.php" selected>1-A Rules Annex A_2025 SALN Form (Updated Form as of 3 February 2026)</option>
+                            <option value="annexB.php">1-B Rules Annex B_2025 SALN Form AS-1 (Declarant) (Updated Form as of 3 February 2026)</option>
+                            <option value="annexC.php">1-C Rules Annex C_ 2025 SALN Form AS-2 (Spouse and Children) (Updated Form as of 3 February 2026)</option>
+                        </select>
+                    </div>
+                </div>
+
                 <!-- Declarant Information -->
                 <section class="form-section">
                     <header class="section-header">
@@ -255,12 +260,8 @@ include_once 'saln_download.php';
         </main>
 
         <!-- Footer -->
-        <footer class="footer-section">
-            <div class="footer-content">
-                <p>&copy; 2024 SALN Generator. All rights reserved. This form is for official use only.</p>
-                <p class="footer-creator">Andrew B. Malubag | Creator | UI / UX</p>
-            </div>
-        </footer>
+        <?php include 'template/footer.php'; ?>
+
     </div>
 
     <script src="functions/index.js"></script>

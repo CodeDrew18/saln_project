@@ -133,8 +133,46 @@ function clearForm() {
     }
 }
 
+function syncAnnexSelector() {
+    const annexType = document.getElementById("annex_type");
+
+    if (!annexType) {
+        return;
+    }
+
+    const path = window.location.pathname.toLowerCase();
+    if (path.endsWith("/annexb.php")) {
+        annexType.value = "annexB.php";
+        return;
+    }
+
+    if (path.endsWith("/annexc.php")) {
+        annexType.value = "annexC.php";
+        return;
+    }
+
+    annexType.value = "index.php";
+}
+
+function navigateToAnnexPage() {
+    const annexType = document.getElementById("annex_type");
+    if (!annexType || !annexType.value) {
+        return;
+    }
+
+    const targetPage = annexType.value;
+    const currentPage = window.location.pathname.split('/').pop().toLowerCase() || "index.php";
+
+    if (currentPage !== targetPage.toLowerCase()) {
+        window.location.href = targetPage;
+    }
+}
+
 window.addChild = addChild;
 window.removeChild = removeChild;
 window.addAsset = addAsset;
 window.removeAsset = removeAsset;
 window.clearForm = clearForm;
+window.navigateToAnnexPage = navigateToAnnexPage;
+
+document.addEventListener("DOMContentLoaded", syncAnnexSelector);
